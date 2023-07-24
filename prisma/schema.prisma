@@ -1,6 +1,6 @@
 datasource db {
     provider = "postgresql"
-    url = env("DATABASE_URL")
+    url      = env("DATABASE_URL")
 }
 
 generator client {
@@ -8,35 +8,127 @@ generator client {
 }
 
 model User {
-    id        Int      @id @default(autoincrement())
-    email     String   @unique
-    firstName      String
-    lastName  String
-    phone     String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-    profile   Profile?
-    posts     Post[]
+    id               Int                @id @default(autoincrement())
+    email            String             @unique
+    firstName        String
+    lastName         String
+    isWorker         Boolean            @default(false)
+    createdAt        DateTime           @default(now())
+    updatedAt        DateTime           @updatedAt
+    Profile          Profile?
+    UserCareer       UserCareer[]
+    UserCalification UserCalification[]
 }
 
 model Profile {
-    id        Int      @id @default(autoincrement())
-    bio       String?
-    user      User     @relation(fields: [userId], references: [id])
-    userId    Int      @unique
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    id           Int            @id @default(autoincrement())
+    bio          String
+    avatar       String
+    user         User           @relation(fields: [userId], references: [id])
+    userId       Int            @unique
+    createdAt    DateTime       @default(now())
+    updatedAt    DateTime       @updatedAt
+    Post         Post[]
+    Address      Address?
+    Contact      Contact?
+    Calification Calification[]
 }
 
 model Post {
-    id        Int      @id @default(autoincrement())
-    title     String
-    content   String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-    author    User     @relation(fields: [authorId], references: [id])
-    authorId  Int
+    id          Int      @id @default(autoincrement())
+    name        String
+    description String
+    likes       Int
+    profile     Profile  @relation(fields: [profileId], references: [id])
+    profileId   Int
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+    Media       Media[]
 }
 
+model Label {
+    id         Int      @id @default(autoincrement())
+    name       String
+    background String   @unique
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
+    Career     Career[]
+}
 
+model Media {
+    id        Int      @id @default(autoincrement())
+    mediaUrl  String
+    post      Post     @relation(fields: [postId], references: [id])
+    postId    Int
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
 
+model Address {
+    id        Int      @id @default(autoincrement())
+    country   String
+    region    String
+    province  String
+    city      String
+    profileId Int      @unique
+    profile   Profile  @relation(fields: [profileId], references: [id])
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model Contact {
+    id        Int      @id @default(autoincrement())
+    phone     String?
+    whatsapp  String?
+    instagram String?
+    facebook  String?
+    pinterest String?
+    profileId Int      @unique
+    profile   Profile  @relation(fields: [profileId], references: [id])
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model Calification {
+    id               Int                @id @default(autoincrement())
+    comment          String
+    stars            Int
+    profileId        Int
+    profile          Profile            @relation(fields: [profileId], references: [id])
+    createdAt        DateTime           @default(now())
+    updatedAt        DateTime           @updatedAt
+    UserCalification UserCalification[]
+}
+
+model Career {
+    id          Int          @id @default(autoincrement())
+    name        String       @unique
+    description String
+    label       Label        @relation(fields: [labelId], references: [id])
+    labelId     Int
+    createdAt   DateTime     @default(now())
+    updatedAt   DateTime     @updatedAt
+    UserCareer  UserCareer[]
+}
+
+model UserCareer {
+    user       User     @relation(fields: [userId], references: [id])
+    userId     Int
+    career     Career   @relation(fields: [careerId], references: [id])
+    careerId   Int
+    assignedAt DateTime @default(now())
+    assignedBy String
+
+    @@id([userId, careerId])
+}
+
+model UserCalification {
+    user           User         @relation(fields: [userId], references: [id])
+    userId         Int
+    calification   Calification @relation(fields: [calificationId], references: [id])
+    calificationId Int
+    assignedAt     DateTime     @default(now())
+    assignedBy     String
+
+    @@id([userId, calificationId])
+}
