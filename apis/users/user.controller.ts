@@ -1,5 +1,6 @@
 import { Request, Response } from "express"
 import { createUser, deleteUser, getAllUsers, getUserById, updateUser } from "./user.service"
+import { createProfileHandler } from "../profiles/profile.controller"
 
 export const getAllUsersHandler = async (_req: Request, res: Response) => {
     try {

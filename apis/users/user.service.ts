@@ -2,7 +2,12 @@ import { User } from "@prisma/client"
 import { prismaClient } from "../../config/prismaClient"
 
 export const getAllUsers = async () => {
-    const users = await prismaClient.user.findMany()
+    const users = await prismaClient.user.findMany({
+        include: {
+            Profile: true,
+            UserCareer: true
+        }
+    })
     return users
 }
 
@@ -14,8 +19,18 @@ export const createUser = async (data: User) => {
             firstName,
             lastName,
             isWorker
-        }
+        },
     })
+
+        // await prismaClient.profile.create({
+        //     data: {
+        //         bio: '',
+        //         avatar: 'https://res.cloudinary.com/da7ov8jyp/image/upload/v1690240475/trabajox/user_ujvrn9.png',
+        //         userId: user.id
+        //     }
+        // })
+
+        // await prismaClient.userCareer.create({
 
     return user;   
 }
@@ -24,6 +39,10 @@ export const getUserById = async (id: number) => {
     const user = await prismaClient.user.findUnique({
         where: {
             id
+        },
+        include: {
+            Profile: true,
+            UserCareer: true
         }
     })
 
