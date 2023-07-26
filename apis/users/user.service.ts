@@ -1,5 +1,6 @@
 import { User } from "@prisma/client"
 import { prismaClient } from "../../config/prismaClient"
+import bcrypt from 'bcrypt'
 
 export const getAllUsers = async () => {
     const users = await prismaClient.user.findMany({
@@ -12,13 +13,15 @@ export const getAllUsers = async () => {
 }
 
 export const createUser = async (data: User) => {
-    const { email, firstName, lastName, isWorker } = data
+    const { email, firstName, lastName, isWorker, password } = data
+    const passwordEncripted = await bcrypt.hash(password, 12)
     const user = await prismaClient.user.create({
         data: {
             email,
             firstName,
             lastName,
-            isWorker
+            isWorker,
+            password: passwordEncripted
         },
     })
 

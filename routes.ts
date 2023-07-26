@@ -8,6 +8,7 @@ import posts from './apis/posts'
 import contact from './apis/contacts'
 import address from './apis/address'
 import media from './apis/media'
+import auth from './apis/auth'
 
 const router = (app: Express) => {
     app.use('/users', users)
@@ -19,6 +20,8 @@ const router = (app: Express) => {
     app.use('/contact', contact)
     app.use('/address', address)
     app.use('/media', media)
+    app.use('/auth', auth)
+
 }
 
 export default router
