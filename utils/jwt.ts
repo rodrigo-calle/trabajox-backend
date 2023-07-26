@@ -1,5 +1,4 @@
 import jwt from 'jsonwebtoken'
-import dotenv from 'dotenv'
 import { User } from '@prisma/client'
 
 const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET ?? ''
@@ -7,12 +6,11 @@ const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET ?? ''
 
 export const generateAccessToken = (user: User) => {
     return jwt.sign({ userId: user.id }, accessTokenSecret, {
-        expiresIn: '15m'
+        expiresIn: '30m'
     })
 }
 
-// TODO: review jti type
-export const generateRefreshToken = (user: User, jti: any) => { 
+export const generateRefreshToken = (user: User, jti: string) => { 
     return jwt.sign({
         userId: user.id,
         jti

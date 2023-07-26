@@ -48,10 +48,11 @@ export const addRefreshToken = async ({jti, refreshToken, userId}: {jti: string,
     return token;
 }
 
-export const findRefreshTokenById = async (id: number) => {
+export const findRefreshTokenById = async (tokenId: string) => {
+    console.log({refreshId: tokenId})
     const tokenFound = await prismaClient.refreshToken.findUnique({
         where: {
-            id
+            tokenId
         }
     })
 
@@ -75,7 +76,7 @@ export const findRefreshTokenByTokenId = async (tokenId: string) => {
  * @param tokenId 
  * @returns token with revoked true
  */
-export const deleteRefreshToken = async (id: number, tokenId: string) => {
+export const deleteRefreshToken = async ({id, tokenId}: {id?: number, tokenId?: string }) => {
     if(id) {
         const token = await prismaClient.refreshToken.update({
             where: {
