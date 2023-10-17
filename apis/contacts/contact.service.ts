@@ -9,7 +9,7 @@ export const getAllContacts = async () => {
     return contacts;
 }
 
-export const getContactById = async (id: number) => {
+export const getContactById = async (id: string) => {
     const contact = await prismaClient.contact.findUnique({
         where: {
             id
@@ -36,7 +36,7 @@ export const createContact = async (data: Contact) => {
     return contact;
 }
 
-export const updateContact = async (id: number, data: Contact) => {
+export const updateContact = async (id: string, data: Contact) => {
     const { phone, instagram, pinterest, facebook, profileId, whatsapp } = data;
     const contact = await prismaClient.contact.update({
         where: {

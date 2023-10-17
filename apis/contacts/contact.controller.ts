@@ -13,7 +13,7 @@ export const getAllContactsHandler = async (req: Request, res: Response) => {
 
 export const getContactByIdHandler = async (req: Request, res: Response) => {
     try {
-        const contact = await getContactById(Number(req.params.id));
+        const contact = await getContactById(req.params.id);
         res.status(200).json(contact);
     } catch (error) {
         res.status(500).json(error);        
@@ -31,7 +31,7 @@ export const createContactHandler = async (req: Request, res: Response) => {
 
 export const updateContactHandler = async (req: Request, res: Response) => {
     try {
-        const contact = await updateContact(Number(req.params.id), req.body);
+        const contact = await updateContact(req.params.id, req.body);
         res.status(200).json(contact);
     } catch (error) {   
         res.status(500).json(error);        

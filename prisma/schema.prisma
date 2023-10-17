@@ -8,24 +8,26 @@ generator client {
 }
 
 model User {
-    id               Int                @id @default(autoincrement())
+    id               String             @id @unique @default(uuid())
     email            String             @unique
+    password         String
     firstName        String
     lastName         String
     isWorker         Boolean            @default(false)
-    createdAt        DateTime           @default(now())
-    updatedAt        DateTime           @updatedAt
     Profile          Profile?
     UserCareer       UserCareer[]
     UserCalification UserCalification[]
+    refreshTokens    RefreshToken[]
+    createdAt        DateTime           @default(now())
+    updatedAt        DateTime           @updatedAt
 }
 
 model Profile {
-    id           Int            @id @default(autoincrement())
+    id           String         @id @unique @default(uuid())
     bio          String
     avatar       String         @default("https://res.cloudinary.com/da7ov8jyp/image/upload/v1690240475/trabajox/user_ujvrn9.png")
-    user         User           @relation(fields: [userId], references: [id])
-    userId       Int            @unique
+    user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId       String            @unique
     createdAt    DateTime       @default(now())
     updatedAt    DateTime       @updatedAt
     Post         Post[]
@@ -35,19 +37,19 @@ model Profile {
 }
 
 model Post {
-    id          Int      @id @default(autoincrement())
+    id          String   @id @unique @default(uuid())
     name        String
     description String
     likes       Int
     profile     Profile  @relation(fields: [profileId], references: [id])
-    profileId   Int
+    profileId   String
     createdAt   DateTime @default(now())
     updatedAt   DateTime @updatedAt
     Media       Media[]
 }
 
 model Label {
-    id         Int      @id @default(autoincrement())
+    id         String   @id @unique @default(uuid())
     name       String
     background String   @unique
     createdAt  DateTime @default(now())
@@ -56,44 +58,44 @@ model Label {
 }
 
 model Media {
-    id        Int      @id @default(autoincrement())
+    id        String   @id @unique @default(uuid())
     mediaUrl  String
     post      Post     @relation(fields: [postId], references: [id])
-    postId    Int
+    postId    String
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 }
 
 model Address {
-    id        Int      @id @default(autoincrement())
+    id        String   @id @unique @default(uuid())
     country   String
     region    String
     province  String
     city      String
-    profileId Int      @unique
+    profileId String      @unique
     profile   Profile  @relation(fields: [profileId], references: [id])
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 }
 
 model Contact {
-    id        Int      @id @default(autoincrement())
+    id        String   @id @unique @default(uuid())
     phone     String?
     whatsapp  String?
     instagram String?
     facebook  String?
     pinterest String?
-    profileId Int      @unique
+    profileId String      @unique
     profile   Profile  @relation(fields: [profileId], references: [id])
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 }
 
 model Calification {
-    id               Int                @id @default(autoincrement())
+    id               String             @id @unique @default(uuid())
     comment          String
     stars            Int
-    profileId        Int
+    profileId        String
     profile          Profile            @relation(fields: [profileId], references: [id])
     createdAt        DateTime           @default(now())
     updatedAt        DateTime           @updatedAt
@@ -101,11 +103,11 @@ model Calification {
 }
 
 model Career {
-    id          Int          @id @default(autoincrement())
+    id          String       @id @unique @default(uuid())
     name        String       @unique
     description String
     label       Label        @relation(fields: [labelId], references: [id])
-    labelId     Int
+    labelId     String
     createdAt   DateTime     @default(now())
     updatedAt   DateTime     @updatedAt
     UserCareer  UserCareer[]
@@ -113,9 +115,9 @@ model Career {
 
 model UserCareer {
     user       User     @relation(fields: [userId], references: [id])
-    userId     Int
+    userId     String
     career     Career   @relation(fields: [careerId], references: [id])
-    careerId   Int
+    careerId   String
     assignedAt DateTime @default(now())
     assignedBy String
 
@@ -124,11 +126,21 @@ model UserCareer {
 
 model UserCalification {
     user           User         @relation(fields: [userId], references: [id])
-    userId         Int
+    userId         String
     calification   Calification @relation(fields: [calificationId], references: [id])
-    calificationId Int
+    calificationId String
     assignedAt     DateTime     @default(now())
     assignedBy     String
 
     @@id([userId, calificationId])
+}
+
+model RefreshToken {
+    id          String   @id @unique @default(uuid())
+    hashedToken String
+    userId      String
+    User        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    revoked     Boolean  @default(false)
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
 }

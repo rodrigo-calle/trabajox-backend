@@ -4,7 +4,7 @@ import { createAddress, getAddressById, updateAddress } from "./address.service"
 export const getAddressByIdHandler = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
-        const address = await getAddressById(Number(id));
+        const address = await getAddressById(id);
 
         res.status(200).json(address)
 
@@ -27,7 +27,7 @@ export const updateAddressHandler = async (req: Request, res: Response) => {
     try {
         const { body } = req;
         const { id } = req.params;
-        const address = await updateAddress(Number(id), body);
+        const address = await updateAddress(id, body);
         res.status(200).json(address)
     } catch (error) {
         res.status(500).json({ error })

@@ -16,7 +16,7 @@ export const createAddress = async (data: Address):  Promise<Address> => {
     return address;
 }
 
-export const getAddressById = async (id: number): Promise<Address | null> => {
+export const getAddressById = async (id: string): Promise<Address | null> => {
     const address = await prismaClient.address.findUnique({
         where: {
             id
@@ -26,7 +26,7 @@ export const getAddressById = async (id: number): Promise<Address | null> => {
     return address;
 }
 
-export const updateAddress = async (id: number, data: Address): Promise<Address> => {
+export const updateAddress = async (id: string, data: Address): Promise<Address> => {
     const { city, country, profileId, province, region } = data;
 
     const address = await prismaClient.address.update({
